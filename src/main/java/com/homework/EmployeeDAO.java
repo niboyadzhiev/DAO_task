@@ -31,7 +31,7 @@ public class EmployeeDAO {
                     "FROM employees e LEFT JOIN departments d ON e.department_id = d.department_id");
             while (resultSet.next()) {
                 resultList.add(new Employee(resultSet.getInt("employeeID"),resultSet.getString("firstName"),
-                        resultSet.getString("lastName"),resultSet.getString("department")));
+                        resultSet.getString("lastName"),resultSet.getString("department"), resultSet.getBigDecimal("salary")));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -85,7 +85,7 @@ public class EmployeeDAO {
 
             while (resultSet.next()) {
                 resultList.add(new Employee(resultSet.getInt("employeeID"),resultSet.getString("firstName"),
-                        resultSet.getString("lastName"),resultSet.getString("department")));
+                        resultSet.getString("lastName"),resultSet.getString("department"), resultSet.getBigDecimal("salary")));
             }
 
             for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
@@ -112,6 +112,64 @@ public class EmployeeDAO {
         } finally {
             try {
 //                connection.close();
+                statement.close();
+                resultSet.close();
+            } catch (SQLException e) {
+                System.out.println("SQL Exception: " + e.getMessage());
+                System.out.println("SQL State: " + e.getSQLState());
+                System.out.println("Vendor Code: " + e.getErrorCode());
+            }
+
+        }
+        return resultList;
+
+    }
+
+    public List<Employee>  listAllEmployees() throws ClassNotFoundException {
+        Connection connection = null;
+        List<Employee> resultList = new ArrayList<>();
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+
+        try {
+            connection = dbConnector.getConnection();
+
+            String queryText = "SELECT e.employee_id employeeID, e.first_name firstName, e.last_name lastName, d.department_name department, e.salary salary " +
+                    "FROM employees e LEFT JOIN departments d ON e.department_id = d.department_id;";
+
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(queryText);
+
+            while (resultSet.next()) {
+                resultList.add(new Employee(resultSet.getInt("employeeID"),resultSet.getString("firstName"),
+                        resultSet.getString("lastName"),resultSet.getString("department"), resultSet.getBigDecimal("salary")));
+            }
+
+            for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
+                if (i > 1) System.out.print("; ");
+                System.out.print(resultSet.getMetaData().getColumnLabel(i));
+                if (i == resultSet.getMetaData().getColumnCount()) {
+                    System.out.println();
+                }
+            }
+
+            resultSet.beforeFirst();
+            while (resultSet.next()) {
+                for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
+                    if (i > 1) System.out.print("; ");
+                    System.out.print(resultSet.getString(i));
+                }
+                System.out.println();
+            }
+
+        } catch (SQLException e) {
+            System.out.println("SQL Exception: " + e.getMessage());
+            System.out.println("SQL State: " + e.getSQLState());
+            System.out.println("Vendor Code: " + e.getErrorCode());
+        } finally {
+            try {
+                connection.close();
                 statement.close();
                 resultSet.close();
             } catch (SQLException e) {

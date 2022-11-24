@@ -29,6 +29,10 @@ public class EmployeeService {
         return employeeDAO.deleteEmployee(employee_id);
     }
 
+    public List<Employee> getAllEmployees () throws ClassNotFoundException {
+        return employeeDAO.getAllEmployees();
+    }
+
 
 
 

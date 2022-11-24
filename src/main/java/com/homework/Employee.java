@@ -1,16 +1,21 @@
 package com.homework;
 
+import java.math.BigDecimal;
+
 public class Employee {
     private int employeeId;
     private String firstName;
     private String lastName;
     private String department;
 
-    public Employee(int employeeId, String firstName, String lastName, String department) {
+    private BigDecimal salary;
+
+    public Employee(int employeeId, String firstName, String lastName, String department, BigDecimal salary) {
         this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.department = department;
+        this.salary = salary;
     }
 
     public int getEmployeeId() {

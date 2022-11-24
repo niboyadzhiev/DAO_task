@@ -37,10 +37,6 @@ public class AppConfig {
         return new EmployeeDataCollector();
     }
 
-    @Bean (name = "menu")
-    public Menu menu() {
-        return new Menu(Integer.parseInt(env.getProperty("numberOfAttempts")));
-    }
 
 
 
